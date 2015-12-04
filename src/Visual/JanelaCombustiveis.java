@@ -6,8 +6,10 @@
 package Visual;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import modelo.Combustiveis;
 import modelo.DAOCombustiveis;
+import org.jdesktop.beansbinding.Converter;
 
 /**
  *
@@ -20,8 +22,8 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
     
     
     public void atualizaTabela() {
-        listaObjetos.clear();
-        listaObjetos.addAll(dao.consulta(Integer.parseInt(idPosto)));
+        listaObjetos.clear();       
+        listaObjetos.addAll(dao.consulta(Integer.parseInt(idPosto)));              
         int linha = listaObjetos.size() - 1;
         if (linha >= 0) {
             tabelaPrecos.setRowSelectionInterval(linha, linha);
@@ -29,9 +31,33 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
         }
     }
     
+    public boolean validaCampos() {
+        if (!(txtGasAditivada.getText().length() > 0
+                && txtGasComum.getText().length() > 0
+                && txtEtanol.getText().length() > 0
+                && txtDiesel.getText().length() > 0
+                && txtData.getText().length() > 0)) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos do cadastro");
+            return false;
+        }
+        return true;
+    }
+    
+    private void trataEdicao(boolean editando) {
+        botaoIncluir.setEnabled(editando);
+        botaoExcluir.setEnabled(!editando);
+        botaoNovo.setEnabled(!editando);
+        txtGasComum.setEditable(editando);
+        txtGasAditivada.setEditable(editando);
+        txtEtanol.setEditable(editando);
+        txtDiesel.setEditable(editando);
+        txtData.setEditable(editando);  
+    }
+    
     public JanelaCombustiveis(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        trataEdicao(false);
     }
 
     
@@ -56,50 +82,71 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtData = new javax.swing.JFormattedTextField();
+        javax.swing.text.MaskFormatter maskData = null;
+        try {
+            maskData = new javax.swing.text.MaskFormatter("##/##/####");
+            maskData.setPlaceholder("_");
+        } catch (Exception e) {}
+        txtData = new javax.swing.JFormattedTextField(maskData);
         txtGasComum = new javax.swing.JTextField();
         txtGasAditivada = new javax.swing.JTextField();
         txtEtanol = new javax.swing.JTextField();
         txtDiesel = new javax.swing.JTextField();
         botaoIncluir = new javax.swing.JButton();
         botaoExcluir = new javax.swing.JButton();
+        botaoAtualizar = new javax.swing.JButton();
+        botaoNovo = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        txtIdPosto = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Combustiveis");
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        tabelaPrecos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listaObjetos, tabelaPrecos);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
+        columnBinding.setColumnName("Codigo");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${dataDePrecos}"));
+        columnBinding.setColumnName("Data");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${valorGasolina}"));
+        columnBinding.setColumnName("Gasolina");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${valorGasolinaAd}"));
+        columnBinding.setColumnName("Gasolina Ad");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${valorAlcool}"));
+        columnBinding.setColumnName("Etanol");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${valorDiesel}"));
+        columnBinding.setColumnName("Diesel");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
         jScrollPane1.setViewportView(tabelaPrecos);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jLabel1.setText("Data:");
+        jLabel1.setText("Gasolina Aditivada:");
 
         jLabel2.setText("Gasolina Comum:");
 
-        jLabel3.setText("Gasolina Aditivada");
+        jLabel3.setText("Data:");
 
-        jLabel4.setText("Diesel");
+        jLabel4.setText("Diesel:");
 
-        jLabel5.setText("Etanol");
+        jLabel5.setText("Etanol:");
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tabelaPrecos, org.jdesktop.beansbinding.ELProperty.create(""), txtData, org.jdesktop.beansbinding.BeanProperty.create("value"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tabelaPrecos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.dataDePrecos}"), txtData, org.jdesktop.beansbinding.BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         txtData.addActionListener(new java.awt.event.ActionListener() {
@@ -108,60 +155,102 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
             }
         });
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tabelaPrecos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.valorGasolina}"), txtGasComum, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tabelaPrecos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.valorGasolinaAd}"), txtGasAditivada, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tabelaPrecos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.valorAlcool}"), txtEtanol, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tabelaPrecos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.valorDiesel}"), txtDiesel, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         botaoIncluir.setText("Incluir");
-
-        botaoExcluir.setText("Excluir");
-
-        jLabel6.setText("idPosto");
-
-        txtIdPosto.setEditable(false);
-
-        jButton1.setText("Atualizar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        botaoIncluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                botaoIncluirActionPerformed(evt);
             }
         });
+
+        botaoExcluir.setText("Excluir");
+        botaoExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoExcluirActionPerformed(evt);
+            }
+        });
+
+        botaoAtualizar.setText("Atualizar");
+        botaoAtualizar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                botaoAtualizarMouseReleased(evt);
+            }
+        });
+        botaoAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoAtualizarActionPerformed(evt);
+            }
+        });
+
+        botaoNovo.setText("Novo");
+        botaoNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoNovoActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Click em atualizar e serão listados todos os valores armazenados referentes ao posto escolhido.");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel6))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtGasAditivada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                            .addComponent(txtGasComum, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                            .addComponent(txtIdPosto))))
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4))
-                        .addGap(18, 18, 18))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtDiesel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtEtanol, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botaoExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botaoIncluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(129, 129, 129))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGap(0, 35, Short.MAX_VALUE)
+                                .addComponent(botaoNovo))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtGasComum, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                                    .addComponent(txtGasAditivada))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtDiesel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtEtanol, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, Short.MAX_VALUE)
+                                .addComponent(botaoAtualizar)
+                                .addGap(18, 18, 18)
+                                .addComponent(botaoIncluir, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(botaoExcluir)
+                                .addGap(24, 24, 24))))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,8 +259,8 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(txtEtanol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(txtGasAditivada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
@@ -180,16 +269,14 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(txtGasAditivada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(botaoAtualizar)
                     .addComponent(botaoIncluir)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(botaoExcluir)
-                    .addComponent(txtIdPosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(jButton1))
-                .addContainerGap(26, Short.MAX_VALUE))
+                    .addComponent(botaoNovo)
+                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addComponent(jLabel6))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -203,9 +290,51 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDataActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        atualizaTabela();       
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void botaoAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAtualizarActionPerformed
+       trataEdicao(false);
+       atualizaTabela();
+    }//GEN-LAST:event_botaoAtualizarActionPerformed
+
+    private void botaoIncluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoIncluirActionPerformed
+        if (validaCampos()) {
+            int linhaSelecionada = tabelaPrecos.getSelectedRow();            
+            Combustiveis obj = listaObjetos.get(linhaSelecionada);
+            obj.setIdPosto(Integer.parseInt(idPosto)); 
+            dao.salvar(obj);           
+            trataEdicao(false);
+            atualizaTabela();
+        }
+    }//GEN-LAST:event_botaoIncluirActionPerformed
+
+    private void botaoNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoActionPerformed
+        trataEdicao(true);
+        listaObjetos.add((Combustiveis) new Combustiveis());
+        int linha = listaObjetos.size() - 1;
+        tabelaPrecos.setRowSelectionInterval(linha, linha);
+        txtGasAditivada.requestFocus();
+    }//GEN-LAST:event_botaoNovoActionPerformed
+
+    private void botaoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirActionPerformed
+        int linhaSelecionada = tabelaPrecos.getSelectedRow();
+        if(linhaSelecionada > -1){
+            int escolha =
+            JOptionPane.showOptionDialog(null,
+                "Deseja realmente fazer a exclusão?",
+                "Pergunta",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null,
+                new String[]{"Sim", "Não"}, "Sim");
+            if (escolha == 0) {
+                Combustiveis obj = listaObjetos.get(linhaSelecionada);
+                dao.remover(obj);
+                atualizaTabela();
+            }
+        }
+    }//GEN-LAST:event_botaoExcluirActionPerformed
+
+    private void botaoAtualizarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botaoAtualizarMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botaoAtualizarMouseReleased
 
     /**
      * @param args the command line arguments
@@ -250,9 +379,10 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botaoAtualizar;
     private javax.swing.JButton botaoExcluir;
     private javax.swing.JButton botaoIncluir;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton botaoNovo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -269,7 +399,6 @@ public class JanelaCombustiveis extends javax.swing.JDialog {
     private javax.swing.JTextField txtEtanol;
     private javax.swing.JTextField txtGasAditivada;
     private javax.swing.JTextField txtGasComum;
-    private javax.swing.JTextField txtIdPosto;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 

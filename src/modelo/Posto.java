@@ -1,7 +1,6 @@
 
 package modelo;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -18,7 +17,6 @@ public class Posto {
     private String endereco;
     private String bairro;
     private String imagem;
-    private ArrayList<Combustiveis> idCombustiveis;
 
     public Posto() {
     }
@@ -29,14 +27,6 @@ public class Posto {
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
-    public ArrayList<Combustiveis> getIdCombustiveis() {
-        return idCombustiveis;
-    }
-
-    public void setIdCombustiveis(ArrayList<Combustiveis> idCombustiveis) {
-        this.idCombustiveis = idCombustiveis;
-    }
-
     public Integer getCodigo() {
         return codigo;
     }

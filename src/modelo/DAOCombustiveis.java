@@ -4,9 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,7 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class DAOCombustiveis {
     public List<Combustiveis> getLista(){
-        String sql = "select * from cidades";
+        String sql = "select * from precocombustiveis";
         List<Combustiveis> lista = new ArrayList<>();
         try{
             PreparedStatement pst = Conexao.getPreparedStatement(sql);
@@ -23,14 +21,12 @@ public class DAOCombustiveis {
             while(rs.next()){
                 Combustiveis obj = new Combustiveis();
                 obj.setCodigo(rs.getInt("codigo"));               
-                java.sql.Date dt = rs.getDate("datapreco");
-                Calendar c = Calendar.getInstance();
-                c.setTime(dt);
-                obj.setDataDePrecos(c);
+                obj.setDataDePrecos(rs.getString("datapreco"));
                 obj.setValorGasolina(rs.getFloat("precocomum"));
                 obj.setValorGasolinaAd(rs.getFloat("precoad"));
                 obj.setValorAlcool(rs.getFloat("precoetanol"));
-                obj.setValorDisel(rs.getFloat("precodiesel"));
+                obj.setValorDiesel(rs.getFloat("precodiesel"));
+                obj.setIdPosto(rs.getInt("posto"));
                 lista.add(obj);
             }
         } catch (SQLException e){
@@ -39,8 +35,8 @@ public class DAOCombustiveis {
         return lista;
     }
     
-    public boolean salvar(Combustiveis obj){
-        if(obj.getCodigo() == null){
+    public boolean salvar(Combustiveis obj){        
+        if(obj.getCodigo() == null){           
             return incluir(obj);
         } else{
             return alterar(obj);
@@ -48,19 +44,18 @@ public class DAOCombustiveis {
     }
     
     public boolean incluir(Combustiveis obj){
-        String sql = "insert into precocombustiveis (datapreco,precocomum,precoad,"
-                + "precoetanol,precodiesel,idPosto,codigo) valeus(?,?,?,?,?,?,?)";
+        String sql = "insert into precocombustiveis (precocomum,precoad,"
+                + "precoetanol,precodiesel,posto,datapreco) values(?,?,?,?,?,?)";
         try{
-            PreparedStatement pst = Conexao.getPreparedStatement(sql);
-            pst.setDate(1, new java.sql.Date(obj.getDataDePrecos().getTimeInMillis()));
-            pst.setFloat(2, obj.getValorGasolina());
-            pst.setFloat(3, obj.getValorGasolinaAd());
-            pst.setFloat(4, obj.getValorAlcool());
-            pst.setFloat(5, obj.getValorDisel());
-            pst.setInt(6,obj.getIdPosto());                   
-            pst.setInt(7, obj.getCodigo());
+            PreparedStatement pst = Conexao.getPreparedStatement(sql);          
+            pst.setFloat(1, obj.getValorGasolina());
+            pst.setFloat(2, obj.getValorGasolinaAd());
+            pst.setFloat(3, obj.getValorAlcool());
+            pst.setFloat(4, obj.getValorDiesel());           
+            pst.setInt(5, obj.getIdPosto()); 
+            pst.setString(6, obj.getDataDePrecos());
             if(pst.executeUpdate() > 0){
-                JOptionPane.showMessageDialog(null,"Atualização incluida com sucesso.");
+                JOptionPane.showMessageDialog(null,"Inclusão feita com sucesso.");
                 return true;
             } else{
                 JOptionPane.showMessageDialog(null,"Não foi possivel completar a inclusão.");
@@ -75,14 +70,14 @@ public class DAOCombustiveis {
     
     public boolean alterar(Combustiveis obj){
         String sql = "update posto set datapreco = ?, precocomum = ?, precoad = ?,"
-                + " precoetanol = ?, precodiesel = ?, idPosto = ? where codigo = ?";
+                + " precoetanol = ?, precodiesel = ?, posto = ? where codigo = ?";
         try{
             PreparedStatement pst = Conexao.getPreparedStatement(sql);
-            pst.setDate(1, new java.sql.Date(obj.getDataDePrecos().getTimeInMillis()));
+            pst.setString(1, obj.getDataDePrecos());
             pst.setFloat(2, obj.getValorGasolina());
             pst.setFloat(3, obj.getValorGasolinaAd());
             pst.setFloat(4, obj.getValorAlcool());
-            pst.setFloat(5, obj.getValorDisel());
+            pst.setFloat(5, obj.getValorDiesel());
             pst.setInt(6,obj.getIdPosto());                   
             pst.setInt(7, obj.getCodigo());
             if(pst.executeUpdate() > 0){
@@ -118,13 +113,6 @@ public class DAOCombustiveis {
         }
     } 
     
-    public List<Combustiveis> buscaCombustiveis(List<Combustiveis> combustiveis){
-        List<Combustiveis> listaCombustiveis = new ArrayList<>();
-        listaCombustiveis.addAll(Dados.listaCombustiveis);
-        listaCombustiveis.retainAll(combustiveis);
-        return listaCombustiveis;
-    }
-    
     public Combustiveis localizar (Integer id){
         String sql = "select * from precocombustiveis where codigo = ?";
         Combustiveis obj = new Combustiveis();
@@ -134,14 +122,11 @@ public class DAOCombustiveis {
             ResultSet rs = pst.executeQuery();
             while(rs.next()){              
                 obj.setCodigo(rs.getInt("codigo"));               
-                java.sql.Date dt = rs.getDate("datapreco");
-                Calendar c = Calendar.getInstance();
-                c.setTime(dt);
-                obj.setDataDePrecos(c);
+                obj.setDataDePrecos(rs.getString("datapreco"));           
                 obj.setValorGasolina(rs.getFloat("precocomum"));
                 obj.setValorGasolinaAd(rs.getFloat("precoad"));
                 obj.setValorAlcool(rs.getFloat("precoetanol"));
-                obj.setValorDisel(rs.getFloat("precodiesel"));
+                obj.setValorDiesel(rs.getFloat("precodiesel"));
                 return obj;
             }       
         } catch (SQLException e){
@@ -160,14 +145,12 @@ public class DAOCombustiveis {
             while(rs.next()){
                 Combustiveis obj = new Combustiveis();
                 obj.setCodigo(rs.getInt("codigo"));               
-                java.sql.Date dt = rs.getDate("datapreco");
-                Calendar c = Calendar.getInstance();
-                c.setTime(dt);
-                obj.setDataDePrecos(c);
+                obj.setDataDePrecos(rs.getString("datapreco"));
                 obj.setValorGasolina(rs.getFloat("precocomum"));
                 obj.setValorGasolinaAd(rs.getFloat("precoad"));
                 obj.setValorAlcool(rs.getFloat("precoetanol"));
-                obj.setValorDisel(rs.getFloat("precodiesel"));
+                obj.setValorDiesel(rs.getFloat("precodiesel"));
+                obj.setIdPosto(rs.getInt("posto"));
                 lista.add(obj);
             }
         } catch (SQLException e){

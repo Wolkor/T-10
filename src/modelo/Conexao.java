@@ -1,16 +1,18 @@
 package modelo;
 
-import com.sun.istack.internal.logging.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.logging.Level;
+
 
 /**
  *
  * @author Wolkor
  */
+
+//está classe acabou não sendo usada
 public class Conexao {
     private static final String banco ="jdbc:postgresql://localhost:5432/cadastros";
     private static final String driver = "org.postgresql.Driver";

@@ -96,6 +96,10 @@ public class JanelaCadastros extends javax.swing.JDialog {
 
         listaObjetos = org.jdesktop.observablecollections.ObservableCollections.observableList(new ArrayList<Posto>())
         ;
+        listPesquisa = org.jdesktop.observablecollections.ObservableCollections.observableList(new ArrayList<Posto>())
+        ;
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         painelNavegacao = new javax.swing.JPanel();
         botaoPrimeiro = new javax.swing.JButton();
         botaoAnterior = new javax.swing.JButton();
@@ -119,7 +123,12 @@ public class JanelaCadastros extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtNomePosto = new javax.swing.JTextField();
-        txtCNPJ = new javax.swing.JTextField();
+        javax.swing.text.MaskFormatter maskCnpj = null;
+        try {
+            maskCnpj = new javax.swing.text.MaskFormatter("###.###.###/####-##");
+            maskCnpj.setPlaceholder("_");
+        } catch (Exception e){}
+        txtCNPJ = new javax.swing.JFormattedTextField(maskCnpj);
         txtRazaoSocial = new javax.swing.JTextField();
         txtBandeira = new javax.swing.JTextField();
         txtCodigo = new javax.swing.JTextField();
@@ -132,6 +141,21 @@ public class JanelaCadastros extends javax.swing.JDialog {
         txtBairro = new javax.swing.JTextField();
         txtCEP = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        lblImagem = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        abaPesquisa = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabelaPesquisa = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        botaoPesquisa = new javax.swing.JButton();
+        txtPesquisa = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane3.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastros");
@@ -187,27 +211,35 @@ public class JanelaCadastros extends javax.swing.JDialog {
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
         columnBinding.setColumnName("Codigo");
         columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomePosto}"));
-        columnBinding.setColumnName("Nome Posto");
+        columnBinding.setColumnName("Nome");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${bandeira}"));
         columnBinding.setColumnName("Bandeira");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${cnpj}"));
         columnBinding.setColumnName("Cnpj");
-        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${razaoSocial}"));
         columnBinding.setColumnName("Razao Social");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${endereco}"));
         columnBinding.setColumnName("Endereco");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${bairro}"));
         columnBinding.setColumnName("Bairro");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${cep}"));
         columnBinding.setColumnName("Cep");
         columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         jScrollPane1.setViewportView(tabelaObjetos);
@@ -217,7 +249,7 @@ public class JanelaCadastros extends javax.swing.JDialog {
         abas.addTab("Listar", abasListagem);
 
         painelAcoes.setBorder(javax.swing.BorderFactory.createTitledBorder("Ações"));
-        painelAcoes.setLayout(new java.awt.GridLayout(1, 0));
+        painelAcoes.setLayout(new java.awt.GridLayout());
 
         botaoNovo.setText("Novo");
         botaoNovo.addActionListener(new java.awt.event.ActionListener() {
@@ -352,7 +384,7 @@ public class JanelaCadastros extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(txtCEP, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -410,6 +442,8 @@ public class JanelaCadastros extends javax.swing.JDialog {
             }
         });
 
+        jLabel10.setText("Diretório da imagem:");
+
         javax.swing.GroupLayout abaDadosLayout = new javax.swing.GroupLayout(abaDados);
         abaDados.setLayout(abaDadosLayout);
         abaDadosLayout.setHorizontalGroup(
@@ -417,8 +451,16 @@ public class JanelaCadastros extends javax.swing.JDialog {
             .addComponent(painelAcoes, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(abaDadosLayout.createSequentialGroup()
-                .addComponent(jButton1)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(abaDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addGroup(abaDadosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(abaDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))))
+                .addGap(27, 27, 27)
+                .addComponent(lblImagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         abaDadosLayout.setVerticalGroup(
             abaDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,11 +469,107 @@ public class JanelaCadastros extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(abaDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblImagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(abaDadosLayout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 98, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         abas.addTab("Dados", abaDados);
+
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listPesquisa, tabelaPesquisa);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomePosto}"));
+        columnBinding.setColumnName("Nome Posto");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${endereco}"));
+        columnBinding.setColumnName("Endereco");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${bairro}"));
+        columnBinding.setColumnName("Bairro");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${bandeira}"));
+        columnBinding.setColumnName("Bandeira");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${razaoSocial}"));
+        columnBinding.setColumnName("Razao Social");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${cep}"));
+        columnBinding.setColumnName("Cep");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${cnpj}"));
+        columnBinding.setColumnName("Cnpj");
+        columnBinding.setColumnClass(String.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+
+        jScrollPane2.setViewportView(tabelaPesquisa);
+
+        jPanel4.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        botaoPesquisa.setText("Pesquisar");
+        botaoPesquisa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoPesquisaActionPerformed(evt);
+            }
+        });
+
+        txtPesquisa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPesquisaActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("Digite o nome do bairro:");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botaoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(botaoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(120, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout abaPesquisaLayout = new javax.swing.GroupLayout(abaPesquisa);
+        abaPesquisa.setLayout(abaPesquisaLayout);
+        abaPesquisaLayout.setHorizontalGroup(
+            abaPesquisaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        abaPesquisaLayout.setVerticalGroup(
+            abaPesquisaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, abaPesquisaLayout.createSequentialGroup()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        abas.addTab("Pesquisa", abaPesquisa);
 
         getContentPane().add(abas, java.awt.BorderLayout.CENTER);
 
@@ -533,16 +671,32 @@ public class JanelaCadastros extends javax.swing.JDialog {
     }//GEN-LAST:event_botaoFecharActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JanelaCombustiveis form = new JanelaCombustiveis(new javax.swing.JFrame(),true);
-        form.setTitle("Manutenção da tabela de combustiveis");
-        String idPosto = txtCodigo.getText();
-        form.setIdPosto(idPosto);
-        form.setLocationRelativeTo(null);
-        form.setResizable(false);
-        form.setVisible(true);
-        
-        
+        int tamanhoLista = listaObjetos.size();
+        if (tamanhoLista > 0) {
+            JanelaCombustiveis form = new JanelaCombustiveis(new javax.swing.JFrame(), true);
+            form.setTitle("Manutenção da tabela de combustiveis");
+            form.setIdPosto(txtCodigo.getText());
+            form.setLocationRelativeTo(null);
+            form.setResizable(false);
+            form.setVisible(true);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisaActionPerformed
+       
+        
+    }//GEN-LAST:event_txtPesquisaActionPerformed
+
+    private void botaoPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoPesquisaActionPerformed
+        String str = txtPesquisa.getText();
+        listPesquisa.clear();
+        listPesquisa.addAll(dao.localizar(str));
+        int linha = listPesquisa.size() - 1;
+        if (linha >= 0) {
+            tabelaPesquisa.setRowSelectionInterval(linha, linha);
+            tabelaPesquisa.scrollRectToVisible(tabelaPesquisa.getCellRect(linha, linha, true));
+        }
+    }//GEN-LAST:event_botaoPesquisaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -591,6 +745,7 @@ public class JanelaCadastros extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel abaDados;
+    private javax.swing.JPanel abaPesquisa;
     private javax.swing.JTabbedPane abas;
     private javax.swing.JPanel abasListagem;
     private javax.swing.JButton botaoAnterior;
@@ -599,12 +754,14 @@ public class JanelaCadastros extends javax.swing.JDialog {
     private javax.swing.JButton botaoExcluir;
     private javax.swing.JButton botaoFechar;
     private javax.swing.JButton botaoNovo;
+    private javax.swing.JButton botaoPesquisa;
     private javax.swing.JButton botaoPrimeiro;
     private javax.swing.JButton botaoProximo;
     private javax.swing.JButton botaoSalvar;
     private javax.swing.JButton botaoUltimo;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -612,19 +769,30 @@ public class JanelaCadastros extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblImagem;
+    private java.util.List<Posto> listPesquisa;
     private java.util.List<Posto> listaObjetos;
     private javax.swing.JPanel painelAcoes;
     private javax.swing.JPanel painelNavegacao;
     private javax.swing.JTable tabelaObjetos;
+    private javax.swing.JTable tabelaPesquisa;
     private javax.swing.JTextField txtBairro;
     private javax.swing.JTextField txtBandeira;
     private javax.swing.JTextField txtCEP;
     private javax.swing.JTextField txtCNPJ;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtNomePosto;
+    private javax.swing.JTextField txtPesquisa;
     private javax.swing.JTextField txtRazaoSocial;
     private javax.swing.JTextField txtRua;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;

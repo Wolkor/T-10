@@ -7,6 +7,8 @@ import java.util.List;
  *
  * @author Wolkor
  */
+
+//usada para persistencia em memória
 public class Dados {
 
     public static List<Posto> listaPostos = new ArrayList<>();

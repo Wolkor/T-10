@@ -1,7 +1,7 @@
 package modelo;
 
+
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Objects;
 
 /**
@@ -10,11 +10,11 @@ import java.util.Objects;
  */
 public class Combustiveis implements Serializable{
     private Integer codigo;
-    private Calendar dataDePrecos;
+    private String dataDePrecos;
     private float valorGasolina;
     private float valorGasolinaAd;
     private float valorAlcool;
-    private float valorDisel;
+    private float valorDiesel;
     private Integer idPosto;
 
     public Integer getIdPosto() {
@@ -52,12 +52,12 @@ public class Combustiveis implements Serializable{
         this.valorAlcool = valorAlcool;
     }
 
-    public float getValorDisel() {
-        return valorDisel;
+    public float getValorDiesel() {
+        return valorDiesel;
     }
 
-    public void setValorDisel(float valorDisel) {
-        this.valorDisel = valorDisel;
+    public void setValorDiesel(float valorDiesel) {
+        this.valorDiesel = valorDiesel;
     }
 
     public Integer getCodigo() {
@@ -68,13 +68,15 @@ public class Combustiveis implements Serializable{
         this.codigo = codigo;
     }
 
-    public Calendar getDataDePrecos() {
+    public String getDataDePrecos() {
         return dataDePrecos;
     }
 
-    public void setDataDePrecos(Calendar dataDePrecos) {
+    public void setDataDePrecos(String dataDePrecos) {
         this.dataDePrecos = dataDePrecos;
     }
+
+    
 
     @Override
     public int hashCode() {
@@ -96,10 +98,5 @@ public class Combustiveis implements Serializable{
             return false;
         }
         return true;
-    }
-    
-    @Override
-    public String toString(){
-        return "valorGasolina + valorGasolinaAd + valorAlcool + valorDisel";
-    }
+    }   
 }

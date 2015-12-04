@@ -12,9 +12,7 @@ import javax.swing.JOptionPane;
  * @author Wolkor
  */
 public class DAOPosto {
-    
-    DAOCombustiveis daoCombustiveis = new DAOCombustiveis();
-    
+       
     public List<Posto> getLista(){
         String sql = "select * from posto";
         List<Posto> lista = new ArrayList<>();
@@ -118,23 +116,17 @@ public class DAOPosto {
             JOptionPane.showMessageDialog(null, "Erro de SQL:"+e.getMessage());
             return false;
         }
-    }
+    }   
     
-    public List<Posto> buscaPosto(List<Posto> posto){
-        List<Posto> listaPostos = new ArrayList<>();
-        listaPostos.addAll(Dados.listaPostos);
-        listaPostos.retainAll(posto);
-        return listaPostos;
-    }
-    
-    public Posto localizar (Integer id){
-        String sql = "select * from precocombustiveis where codigo = ?";
-        Posto obj = new Posto();
+    public List<Posto> localizar (String str){
+        String sql = "select * from posto where bairro = ?";
+        List<Posto> lista = new ArrayList<>();
         try{
             PreparedStatement pst = Conexao.getPreparedStatement(sql);
-            pst.setInt(1, obj.getCodigo());
+            pst.setString(1,str);
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
+                Posto obj = new Posto();
                 obj.setCodigo(rs.getInt("codigo"));
                 obj.setCnpj(rs.getString("cnpj"));
                 obj.setCep(rs.getInt("cep"));
@@ -143,13 +135,13 @@ public class DAOPosto {
                 obj.setEndereco(rs.getString("endereco"));
                 obj.setBairro(rs.getString("bairro"));
                 obj.setNomePosto(rs.getString("nomeposto"));
-                obj.setImagem(rs.getString("imagem"));               
-                return obj;           
-            }       
+                obj.setImagem(rs.getString("imagem"));
+                lista.add(obj);                                
+            }      
         } catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Erro de SQL:"+e.getMessage());           
         }
-        return null;
+        return lista;
     }
     
 }
